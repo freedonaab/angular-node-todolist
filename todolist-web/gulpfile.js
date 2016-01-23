@@ -1,6 +1,5 @@
 const gulp = require('gulp');
 const eventStream = require('event-stream');
-const streamqueue = require('streamqueue');
 const flatten = require('gulp-flatten');
 const concat = require('gulp-concat');
 const del = require('del');
@@ -8,7 +7,6 @@ const browserify = require('browserify');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 const babelify = require('babelify');
-//const karma = require('gulp-karma');
 const livereload = require('gulp-livereload');
 
 const app = 'app';
@@ -24,7 +22,6 @@ const paths = {
         src: [
             app + '/app-module.js',
             app + '/**/*.js'
-            //'!' + app + '/**/*.spec.js'
         ]
     },
     css: [
@@ -41,12 +38,7 @@ const paths = {
     clean: [tmp + '/js/**.js']
 };
 
-function handleError(err) {
-    console.warn(err.message);
-    this.emit('end');
-}
-
-gulp.task('libs', ['clean'], function () {
+gulp.task('libs', ['clean'], () => {
     const bundle = browserify({debug: true});
     paths.scripts.libs.forEach(function (path) {
         bundle.require(path.path, {expose: path.expose});
@@ -63,11 +55,9 @@ gulp.task('scripts:precompile', ['libs'], () => gulp
         .pipe(gulp.dest(tmp + '/js/'))
 );
 
-gulp.task('scripts', ['scripts:precompile'], function () {
+gulp.task('scripts', ['scripts:precompile'], () => {
     const bundle = browserify({entries: [tmp + '/js/app-module.js'], extensions: ['.js']});
-    paths.scripts.libs.forEach(function (path) {
-        bundle.external(path.expose);
-    });
+    paths.scripts.libs.forEach((path) => bundle.external(path.expose));
     return bundle
         .transform(babelify, {presets: ['es2015']})
         .bundle()
@@ -94,12 +84,12 @@ gulp.task('fonts', [], () => gulp
         .pipe(gulp.dest(dist + '/fonts/'))
 );
 
-gulp.task('misc', [], function () {
-    return eventStream.merge.apply(null, paths.misc.map(function (item) {
-        return gulp.src(item.src)
-            .pipe(gulp.dest(item.dest));
-    }));
-});
+gulp.task('misc', [], () =>
+    eventStream.merge.apply(null, paths.misc.map((item) =>
+        gulp.src(item.src)
+            .pipe(gulp.dest(item.dest))
+    ))
+);
 
 gulp.task('clean', [], () => del(paths.clean));
 
@@ -119,24 +109,6 @@ gulp.task('watch', [], function () {
         });
 });
 
-//gulp.task('test', ['default'], function () {
-//    return gulp.src('./fake') // fake is use for karma to load files from karma.conf.js
-//        .pipe(karma({
-//            configFile: 'karma.conf.js',
-//            action: 'run'
-//        }))
-//        .on('error', handleError);
-//});
-//
-//gulp.task('testWatch', ['default'], function () {
-//    return gulp.src('./fake') // fake is use for karma to load files from karma.conf.js
-//        .pipe(karma({
-//            configFile: 'karma.conf.js',
-//            action: 'watch'
-//        }))
-//        .on('error', handleError);
-//});
-
 gulp.task('default', [
     'scripts',
     'styles',
@@ -144,5 +116,3 @@ gulp.task('default', [
     'fonts',
     'images'
 ]);
-
-//gulp.task('tdd', ['default', 'testWatch']);
