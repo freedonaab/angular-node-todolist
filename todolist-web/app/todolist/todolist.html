@@ -1,0 +1,44 @@
+<div id="todolist" class="row" ng-controller="TodoListController">
+    <div class="col-xs-12 col-sm-6">
+        <div id="todos">
+            <h1>Todos</h1>
+            <form class="form" name="taskForm" ng-submit="createTask(taskLabel);">
+                <div class="form-group">
+                    <input type="text" id="label" name="label" class="form-control"
+                           ng-model="taskLabel" placeholder="What's left to do ?"/>
+                </div>
+            </form>
+            <div>
+                <button type="button" class="btn btn-primary" ng-click="completeAll();">
+                    Mark all as completed
+                </button>
+            </div>
+            <hr>
+            <div class="list-group">
+                <a href="#" class="list-group-item"
+                   ng-repeat="task in todos = (tasks | filter:{completed:false})"
+                   ng-click="completeTask(task)">
+                    <span>{{task.name}}</span>
+                    <span class="complete glyphicon glyphicon-check pull-right"></span>
+                </a>
+            </div>
+            <div class="footer">
+                {{todos.length}} item(s) left
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-6">
+        <div id="dones">
+            <h1>Completed</h1>
+            <div class="list-group">
+                <a href="#" class="list-group-item"
+                   ng-repeat="task in tasks | filter:{completed:true}"
+                   ng-click="deleteTask(task)">
+                    <span>{{task.name}}</span>
+                    <span class="delete glyphicon glyphicon-remove pull-right"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
