@@ -1,0 +1,13 @@
+{
+  "name": "todolist-web",
+  "version": "1.0.0",
+  "homepage": "https://github.com/freedonaab/angular-node-todolist",
+  "authors": [
+    "freedonaab"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "angular": "~1.4.9",
+    "bootstrap": "~3.3.6"
+  }
+}
